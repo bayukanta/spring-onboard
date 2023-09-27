@@ -9,6 +9,8 @@ import com.example.day1.demo.model.Customer;
 import com.example.day1.demo.service.customer.CustomerService;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @RestController
 @RequestMapping("/api/customers")
@@ -31,8 +33,30 @@ public class CustomerController {
 
     @PostMapping
     public ResponseEntity<Object> createCustomer(@RequestBody CustomerRequest customer) {
-        var id = customerService.createCustomer(customer);
-        return ResponseEntity.ok(id);
+        var cust = customerService.createCustomer(customer);
+        return ResponseEntity.ok(cust);
+    }
+    @PostMapping("/future-create")
+    public ResponseEntity<Object> createFutureCustomer(@RequestBody CustomerRequest customer) throws ExecutionException, InterruptedException {
+        Future<String> future = customerService.createFutureCustomer(customer);
+        while(!future.isDone()){
+            System.out.println("Waiting...");
+        }
+        
+        var cust = future.get();
+        return ResponseEntity.ok(cust);
+    }
+
+    @PostMapping("/future-create2")
+    public ResponseEntity<Object> createFutureCustomer2(@RequestBody CustomerRequest customer, @RequestBody CustomerRequest customer2) throws ExecutionException, InterruptedException {
+        Future<String> future = customerService.createFutureCustomer(customer);
+        Future<String> future2 = customerService.createFutureCustomer(customer2);
+        while(!future.isDone()){
+            System.out.println("Waiting...");
+        }
+
+        var cust = future.get();
+        return ResponseEntity.ok(cust);
     }
 
     @DeleteMapping("/{id}")
@@ -46,7 +70,7 @@ public class CustomerController {
         customerService.updateCustomer(id, customer);
         return ResponseEntity.ok(null);
     }
-    @RequestMapping("/hello")
+    @GetMapping("/hello")
     public String helloWorld() {
         // Just return the page name
         // No Path, no extension

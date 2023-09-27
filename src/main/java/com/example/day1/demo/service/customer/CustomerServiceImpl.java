@@ -10,11 +10,16 @@ import com.example.day1.demo.repository.CustomerRepository;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @Service
 public class CustomerServiceImpl implements CustomerService{
     @Autowired
     private CustomerRepository customerRepository;
+
+    private ExecutorService executor = Executors.newFixedThreadPool(2);
 
     @Override
     public List<Customer> getAllCustomers() {
@@ -40,7 +45,16 @@ public class CustomerServiceImpl implements CustomerService{
                 .build();
 
         var result = customerRepository.save(tmp);
+        System.out.println("In Service");
         return result.getId();
+    }
+
+    @Override
+    public Future<String> createFutureCustomer(CustomerRequest customer){
+        return executor.submit(() -> {
+            Thread.sleep(10000);
+            return createCustomer(customer);
+        });
     }
 
     @Override

@@ -35,20 +35,20 @@ public class CustomerControllerTest {
         assertThat(result.equals(expectedJson));
     }
 
-//    @Test
-//    public void testCreateSuccess(){
-//        url = String.format("http://localhost:%d/api/customers", port);
-//        CustomerRequest request = CustomerRequest.builder()
-//                .number("test number")
-//                .firstName("test fname")
-//                .lastName("test lname")
-//                .email("test email")
-//                .city("test city")
-//                .build();
-//        ResponseEntity<String> result = this.restTemplate.postForEntity(url, request, String.class);
-//
-//        Assertions.assertEquals(result.getStatusCode(), HttpStatus.OK);
-//    }
+    @Test
+    public void testCreateSuccess(){
+        url = String.format("http://localhost:%d/api/customers", port);
+        CustomerRequest request = CustomerRequest.builder()
+                .number("test number")
+                .firstName("test fname")
+                .lastName("test lname")
+                .email("test email")
+                .city("test city")
+                .build();
+        ResponseEntity<String> result = this.restTemplate.postForEntity(url, request, String.class);
+
+        Assertions.assertEquals(result.getStatusCode(), HttpStatus.OK);
+    }
 
     @Test
     public void testGetSuccess(){
